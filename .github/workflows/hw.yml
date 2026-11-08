@@ -1,0 +1,28 @@
+name: CS169 hw-ruby-intro
+on:
+  push:
+    branches: [edidada/cs169-hw]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rspec:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - run: gem install rspec --no-document
+      - name: Run official specs
+        run: rspec --format documentation
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cs169-ruby-intro-results
+          path: |
+            lib/ruby_intro.rb
+            spec/part*_spec.rb
+          if-no-files-found: warn
